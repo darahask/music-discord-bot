@@ -1,0 +1,32 @@
+# Some Symbols used here are just to instruct, use /help for actual command structure.
+# Read the full text all instructions are important
+
+Bot defaults:
+- bass = 0 and treble = 0
+
+Playing songs:
+- /play <name or url>
+- /add <name or url> for adding more
+- /next to play next
+- To exit bot use /leave
+- If url is a playlist all songs will be added to queue
+- /leave will make bot leave channel and clear all resources
+
+Playing songs with bass and treble:
+- the commands are same but if bass and treble are set, the values apply to every song you add or play until you change.
+- if you want different bass and treble values then do this:
+- - /bass 1
+- - /treble 1
+- - /play hello (here the song plays with bass is 1 and treble is 1)
+- - /bass 2
+- - /add hi (here the song plays with bass is 2 and treble is 1)
+- - /treble 2
+- - /add yoo (here the song plays with bass is 2 and treble is 2)
+- Once finished playing all songs, set bass and treble back to zero so that it doesnt affect other song additions.
+
+Warnings:
+- Due to unavailability of spotify premium, if spotify link is provided, it gets the data of the songs
+  and searches in youtube and adds to queue
+- In case wrong songs are put in queue find correct song from youtube and add using /add <url>
+
+Have a nice time playing songs! 🤝

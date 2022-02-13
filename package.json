@@ -1,0 +1,42 @@
+{
+    "name": "music-discord-bot",
+    "version": "1.0.0",
+    "description": "A discord music bot backend",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "engines": {
+        "node": "16.x"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/darahask/music-discord-bot.git"
+    },
+    "keywords": [
+        "discord",
+        "music-bot",
+        "ffmpeg",
+        "bass",
+        "bassboost",
+        "treble"
+    ],
+    "author": "darahask",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/darahask/music-discord-bot/issues"
+    },
+    "homepage": "https://github.com/darahask/music-discord-bot#readme",
+    "dependencies": {
+        "@discordjs/rest": "^0.3.0",
+        "@discordjs/voice": "^0.8.0",
+        "discord-together": "^1.3.3",
+        "discord.js": "^13.6.0",
+        "dotenv": "^16.0.0",
+        "ffmpeg-static": "^4.4.1",
+        "opusscript": "^0.0.8",
+        "play-dl": "^1.8.8",
+        "prism-media": "^1.3.2",
+        "tweetnacl": "^1.0.3"
+    }
+}
