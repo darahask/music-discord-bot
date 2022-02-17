@@ -6,6 +6,7 @@ const {
     playSong,
     addSong,
     nextSong,
+    nextSongButton,
     bass,
     treble,
     leave,
@@ -34,68 +35,90 @@ const client = new Client({
 
 client.discordTogether = new DiscordTogether(client);
 
-client.once("ready",() => {
+client.once("ready", () => {
     console.log("Connected on: " + Date());
 });
 
 client.on("interactionCreate", async (interaction) => {
-    if (!interaction.isCommand() || !interaction.guildId) return;
+    if (!interaction.guildId) return;
 
-    try {
-        switch (interaction.commandName) {
-            case "help":
-                interaction.reply({ embeds: [getHelpEmbed()] });
-                break;
-            case "play":
-                playSong({
-                    interaction,
-                    playerObj,
-                    resourceQueue,
-                    audioFilters,
-                });
-                break;
-            case "add":
-                addSong({ interaction, resourceQueue, audioFilters });
-                break;
-            case "next":
-                nextSong({ interaction, playerObj, resourceQueue });
-                break;
-            case "list":
-                let list = getResourceQueue(
-                    resourceQueue,
-                    interaction.guild.id
-                );
-                interaction.reply({
-                    embeds: [getListEmbed(list)],
-                });
-                break;
-            case "pause":
-                interaction.reply(`Player paused!!`);
-                playerObj.get(interaction.guild.id).audioPlayer.pause();
-                break;
-            case "resume":
-                interaction.reply(`Player resumed!!`);
-                playerObj.get(interaction.guild.id).audioPlayer.unpause();
-                break;
-            case "clear":
-                resourceQueue.set(interaction.guild.id, []);
-                interaction.reply(`Queue cleared 👍`);
-                break;
-            case "leave":
-                leave({ interaction, playerObj, resourceQueue });
-                break;
-            case "bass":
-                bass({ interaction, audioFilters });
-                break;
-            case "treble":
-                treble({ interaction, audioFilters });
-                break;
-            case "partytogether":
-                getWatchLink(interaction, client);
-                break;
+    if (interaction.isCommand()) {
+        try {
+            switch (interaction.commandName) {
+                case "help":
+                    interaction.reply({ embeds: [getHelpEmbed()] });
+                    break;
+                case "play":
+                    playSong({
+                        interaction,
+                        playerObj,
+                        resourceQueue,
+                        audioFilters,
+                    });
+                    break;
+                case "add":
+                    addSong({ interaction, resourceQueue, audioFilters });
+                    break;
+                case "next":
+                    nextSong({ interaction, playerObj, resourceQueue });
+                    break;
+                case "list":
+                    let list = getResourceQueue(
+                        resourceQueue,
+                        interaction.guild.id
+                    );
+                    interaction.reply({
+                        embeds: [getListEmbed(list)],
+                    });
+                    break;
+                case "pause":
+                    interaction.reply(`Player paused!`);
+                    playerObj.get(interaction.guild.id).audioPlayer.pause();
+                    break;
+                case "resume":
+                    interaction.reply(`Player resumed!`);
+                    playerObj.get(interaction.guild.id).audioPlayer.unpause();
+                    break;
+                case "clear":
+                    resourceQueue.set(interaction.guild.id, []);
+                    interaction.reply(`Queue cleared 👍`);
+                    break;
+                case "leave":
+                    leave({ interaction, playerObj, resourceQueue });
+                    break;
+                case "bass":
+                    bass({ interaction, audioFilters });
+                    break;
+                case "treble":
+                    treble({ interaction, audioFilters });
+                    break;
+                case "partytogether":
+                    getWatchLink(interaction, client);
+                    break;
+            }
+        } catch (e) {
+            console.log(Date(), e);
         }
-    } catch (e) {
-        console.log(Date(),e);
+    } else if (interaction.isButton()) {
+        try {
+            switch (interaction.customId) {
+                case "pause":
+                    playerObj.get(interaction.guild.id).audioPlayer.pause();
+                    interaction.update("Player paused!");
+                    break;
+                case "resume":
+                    playerObj.get(interaction.guild.id).audioPlayer.unpause();
+                    interaction.update("Player resumed!");
+                    break;
+                case "next":
+                    nextSongButton({ interaction, playerObj, resourceQueue });
+                    break;
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    } else {
+        return;
     }
 });
 

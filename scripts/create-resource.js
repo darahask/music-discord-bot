@@ -31,7 +31,7 @@ module.exports = async function createResource(res) {
         resource.playStream.on("error", (e) => {
             console.log(Date(), e);
             stream.destroy();
-            stream.removeAllListeners()
+            stream.removeAllListeners();
             resource.playStream.destroy();
             resource.playStream.removeAllListeners();
         });

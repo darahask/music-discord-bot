@@ -1,63 +1,26 @@
-const {
-    joinVoiceChannel,
-    createAudioPlayer,
-    AudioPlayerStatus,
-} = require("@discordjs/voice");
+const { AudioPlayerStatus } = require("@discordjs/voice");
 const createUrlList = require("../scripts/audio-list");
 const createResource = require("../scripts/create-resource");
-const { getResourceQueue, getaudioFilters } = require("./handlerutils");
-
-//create player
-function getNewPlayer(params) {
-    let { interaction, resourceQueue, playerObj } = params;
-
-    let temp = {
-        connection: joinVoiceChannel({
-            channelId: interaction.member.voice.channel.id,
-            guildId: interaction.guild.id,
-            adapterCreator: interaction.guild.voiceAdapterCreator,
-        }),
-        audioPlayer: createAudioPlayer(),
-    };
-    temp.connection.subscribe(temp.audioPlayer);
-    temp.audioPlayer.on("stateChange", async (oldState, newState) => {
-        if (
-            oldState.status === AudioPlayerStatus.Playing &&
-            newState.status === AudioPlayerStatus.Idle
-        ) {
-            let song_list = getResourceQueue(
-                resourceQueue,
-                interaction.guild.id
-            );
-            if (song_list.length !== 0) {
-                temp.audioPlayer.play(await createResource(song_list.shift()));
-                resourceQueue.set(interaction.guild.id, song_list);
-            } else {
-                interaction.channel.send("Finished Playing songs 😊");
-            }
-        }
-    });
-    temp.audioPlayer.on("error", (error) => {
-        console.log(error);
-    });
-
-    playerObj.set(interaction.guild.id, temp);
-    return temp;
-}
+const {
+    getResourceQueue,
+    getaudioFilters,
+    getNewPlayer,
+    getPlayerButtons,
+} = require("./handlerutils");
 
 // command handlers
 async function playSong(params) {
     const { interaction, playerObj, resourceQueue, audioFilters } = params;
 
     if (!interaction.member.voice.channel)
-        return await interaction.reply("Please join a voice channel 😅");
+        return interaction.reply("Please join a voice channel 😅");
 
     let queue = getResourceQueue(resourceQueue, interaction.guild.id);
     let song = interaction.options.getString("song");
     let player = playerObj.get(interaction.guild.id);
 
     if (song) {
-        interaction.reply("Please while i am fetching songs 😁");
+        await interaction.reply("Please while i am fetching songs 😁");
         let a = getaudioFilters(audioFilters, interaction.guild.id);
         let res = await createUrlList(song.trim(), a.bass, a.treble);
         queue = [...queue, ...res];
@@ -65,40 +28,56 @@ async function playSong(params) {
         if (player) {
             if (player.audioPlayer.state.status === AudioPlayerStatus.Playing) {
                 resourceQueue.set(interaction.guild.id, queue);
-                return await interaction.editReply(
+                return interaction.editReply(
                     "Player is already playing, Added to queue 👍"
                 );
             }
             let s = queue.shift();
             player.audioPlayer.play(await createResource(s));
             resourceQueue.set(interaction.guild.id, queue);
-            await interaction.editReply("Started playing songs 😁");
+            await interaction.editReply({
+                content: "Started playing songs 😁",
+                components: [getPlayerButtons()],
+            });
         } else {
             let s = queue.shift();
             let temp = getNewPlayer({ interaction, resourceQueue, playerObj });
             temp.audioPlayer.play(await createResource(s));
             resourceQueue.set(interaction.guild.id, queue);
-            await interaction.editReply("Started playing songs 😁");
+            await interaction.editReply({
+                content: "Started playing songs 😁",
+                components: [getPlayerButtons()],
+            });
         }
     } else {
         if (player) {
             if (player.audioPlayer.state.status === AudioPlayerStatus.Playing)
-                return await interaction.reply("Player is already playing 😅");
+                return interaction.reply("Player is already playing 😅");
             if (queue.length !== 0) {
                 let s = queue.shift();
                 player.audioPlayer.play(await createResource(s));
                 resourceQueue.set(interaction.guild.id, queue);
-                await interaction.reply("Started playing songs 😁");
+                await interaction.reply({
+                    content: "Started playing songs 😁",
+                    components: [getPlayerButtons()],
+                });
             } else {
                 await interaction.reply("Song queue is empty 😅");
             }
         } else {
             if (queue.length !== 0) {
                 let s = queue.shift();
-                let temp = getNewPlayer({ interaction, resourceQueue, playerObj });
+                let temp = getNewPlayer({
+                    interaction,
+                    resourceQueue,
+                    playerObj,
+                });
                 temp.audioPlayer.play(await createResource(s));
                 resourceQueue.set(interaction.guild.id, queue);
-                await interaction.reply("Started playing songs 😁");
+                await interaction.reply({
+                    content: "Started playing songs 😁",
+                    components: [getPlayerButtons()],
+                });
             } else {
                 await interaction.reply("Song queue is empty 😅");
             }
@@ -113,7 +92,7 @@ async function addSong(params) {
     let song = interaction.options.getString("song");
 
     if (!song) {
-        await interaction.reply("Please enter song name or song url 🥺");
+        interaction.reply("Please enter song name or song url 🥺");
         return;
     }
 
@@ -122,7 +101,7 @@ async function addSong(params) {
     let res = await createUrlList(song.trim(), a.bass, a.treble);
 
     resourceQueue.set(interaction.guild.id, [...queue, ...res]);
-    await interaction.editReply("Song added to list 👍");
+    await interaction.editReply("Added to queue 👍");
 }
 
 async function nextSong(params) {
@@ -131,10 +110,23 @@ async function nextSong(params) {
     let song_list = getResourceQueue(resourceQueue, interaction.guild.id);
     if (song_list.length !== 0) {
         let player = playerObj.get(interaction.guild.id).audioPlayer;
-        player.stop()
+        player.stop();
         await interaction.reply("Current song skipped 🖖");
     } else {
         await interaction.reply("Finished Playing songs 😊");
+    }
+}
+
+async function nextSongButton(params) {
+    const { interaction, playerObj, resourceQueue } = params;
+
+    let song_list = getResourceQueue(resourceQueue, interaction.guildId);
+    if (song_list.length !== 0) {
+        let player = playerObj.get(interaction.guildId).audioPlayer;
+        player.stop();
+        await interaction.update("Current song skipped 🖖");
+    } else {
+        await interaction.update("Finished Playing songs 😊");
     }
 }
 
@@ -148,7 +140,7 @@ function bass(params) {
     }
     let a = getaudioFilters(audioFilters, interaction.guild.id);
     audioFilters.set(interaction.guild.id, { ...a, bass: args.trim() });
-    interaction.reply("Bass set succesfully!!!");
+    interaction.reply("Bass set succesfully!");
 }
 
 function treble(params) {
@@ -161,7 +153,7 @@ function treble(params) {
     }
     let a = getaudioFilters(audioFilters, interaction.guild.id);
     audioFilters.set(interaction.guild.id, { ...a, treble: args.trim() });
-    interaction.reply("Treble set succesfully!!!");
+    interaction.reply("Treble set succesfully!");
 }
 
 async function leave(params) {
@@ -171,14 +163,14 @@ async function leave(params) {
     let p = playerObj.get(interaction.guild.id);
     if (p.audioPlayer) p.audioPlayer.stop();
     if (p.connection) p.connection.destroy();
-    
+
     resourceQueue.set(interaction.guild.id, []);
     playerObj.set(interaction.guild.id, null);
 }
 
 async function getWatchLink(interaction, client) {
     if (!interaction.member.voice.channel)
-        return await interaction.reply("Please join a voice channel 😅");
+        return interaction.reply("Please join a voice channel 😅");
 
     let voicechannel = interaction.member.voice.channel.id;
     let option = interaction.options.getString("party-together");
@@ -186,7 +178,7 @@ async function getWatchLink(interaction, client) {
     client.discordTogether
         .createTogetherCode(voicechannel, option)
         .then(async (invite) => {
-            interaction.reply(`Here's the link: ${invite.code} 🥳`);
+            interaction.reply(`Here's the link: ${invite.code}  🥳`);
         });
 }
 
@@ -194,6 +186,7 @@ module.exports = {
     playSong,
     addSong,
     nextSong,
+    nextSongButton,
     bass,
     treble,
     leave,

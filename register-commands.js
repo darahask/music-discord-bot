@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { REST } = require('@discordjs/rest');
+const { REST } = require("@discordjs/rest");
 
 const commands = [
     {
@@ -60,7 +60,8 @@ const commands = [
             {
                 name: "bass",
                 type: 3,
-                description: "Enter any value from 1 to 12, for no bass set it back to 0",
+                description:
+                    "Enter any value from 1 to 12, for no bass set it back to 0",
                 required: true,
             },
         ],
@@ -72,7 +73,8 @@ const commands = [
             {
                 name: "treble",
                 type: 3,
-                description: "Enter any value from 1 to 12, for no treble set it back to 0",
+                description:
+                    "Enter any value from 1 to 12, for no treble set it back to 0",
                 required: true,
             },
         ],
@@ -119,19 +121,16 @@ const commands = [
 const application_id = process.env.APPLICATION_ID;
 const token = process.env.CLIENT_TOKEN;
 const URL = `/applications/${application_id}/commands`;
-const rest = new REST({ version: '9' }).setToken(token);
+const rest = new REST({ version: "9" }).setToken(token);
 
 (async () => {
-	try {
-		console.log('Started refreshing application (/) commands.');
+    try {
+        console.log("Started refreshing application (/) commands.");
 
-		await rest.put(
-			URL,
-			{ body: commands },
-		);
+        await rest.put(URL, { body: commands });
 
-		console.log('Successfully reloaded application (/) commands.');
-	} catch (error) {
-		console.error(error);
-	}
+        console.log("Successfully reloaded application (/) commands.");
+    } catch (error) {
+        console.error(error);
+    }
 })();

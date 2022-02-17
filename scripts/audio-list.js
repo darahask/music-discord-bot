@@ -31,22 +31,8 @@ async function createResourceList(args, bass, treble) {
                     treble: treble,
                 };
                 resourceQueue.push(audioResource);
-            } else if (sp_data.type === "album") {
-                let tracks = sp_data.fetched_tracks.get("1");
-                for (var i = 0; i < tracks.length; i++) {
-                    let yt_info = await play.search(tracks[i].name, {
-                        limit: 1,
-                    });
-                    let audioResource = {
-                        name: tracks[i].name,
-                        link: yt_info[0].url,
-                        bass: bass,
-                        treble: treble,
-                    };
-                    resourceQueue.push(audioResource);
-                }
-            } else if (sp_data.type === "playlist") {
-                let tracks = sp_data.fetched_tracks.get("1");
+            } else {
+                let tracks = await sp_data.all_tracks();
                 for (var i = 0; i < tracks.length; i++) {
                     let yt_info = await play.search(tracks[i].name, {
                         limit: 1,
@@ -62,8 +48,10 @@ async function createResourceList(args, bass, treble) {
             }
         } else {
             if (args.includes("playlist")) {
-                let tracks = await play.playlist_info(args,{incomplete:true});
-                tracks = tracks.videos;
+                let tracks = await play.playlist_info(args, {
+                    incomplete: true,
+                });
+                tracks = await tracks.all_videos();
                 for (var i = 0; i < tracks.length; i++) {
                     let audioResource = {
                         name: tracks[i].title,

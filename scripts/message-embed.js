@@ -6,9 +6,7 @@ function getHelpEmbed() {
         .setColor("#0099ff")
         .setTitle("Medley bot commands 🎵")
         .setAuthor({ name: "By Darahas" })
-        .setThumbnail(
-            "https://i.imgur.com/mKkSZOl.png"
-        )
+        .setThumbnail("https://i.imgur.com/mKkSZOl.png")
         .setDescription(mainStr);
 
     return exampleEmbed;
@@ -26,9 +24,7 @@ function getListEmbed(data) {
         .setColor("#0099ff")
         .setTitle("Songs in queue 🎵")
         .setAuthor({ name: "By Darahas" })
-        .setThumbnail(
-            "https://i.imgur.com/mKkSZOl.png"
-        )
+        .setThumbnail("https://i.imgur.com/mKkSZOl.png")
         .setFields(fields);
 
     return exampleEmbed;
