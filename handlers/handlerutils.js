@@ -63,21 +63,34 @@ function getNewPlayer(params) {
 }
 
 function getPlayerButtons() {
-    const row = new MessageActionRow().addComponents(
+    const row1 = new MessageActionRow().addComponents(
         new MessageButton()
             .setCustomId("pause")
-            .setLabel("Pause")
+            .setEmoji("⏸")
             .setStyle("PRIMARY"),
         new MessageButton()
             .setCustomId("resume")
-            .setLabel("Resume")
+            .setEmoji("▶")
+            .setStyle("SUCCESS"),
+        new MessageButton().setCustomId("next").setEmoji("⏭").setStyle("DANGER")
+    );
+
+    const row2 = new MessageActionRow().addComponents(
+        new MessageButton()
+            .setCustomId("list")
+            .setEmoji("📀")
+            .setStyle("PRIMARY"),
+        new MessageButton()
+            .setCustomId("clear")
+            .setEmoji("🧹")
             .setStyle("SUCCESS"),
         new MessageButton()
-            .setCustomId("next")
-            .setLabel("Next")
+            .setCustomId("leave")
+            .setEmoji("⏹")
             .setStyle("DANGER")
     );
-    return row;
+
+    return [row1, row2];
 }
 
 module.exports = {

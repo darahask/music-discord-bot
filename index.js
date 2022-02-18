@@ -100,22 +100,44 @@ client.on("interactionCreate", async (interaction) => {
             console.log(Date(), e);
         }
     } else if (interaction.isButton()) {
+        let play = playerObj.get(interaction.guild.id);
+        if (!play)
+            return interaction.update({
+                content: "Interaction expired!",
+                components: [],
+            });
         try {
             switch (interaction.customId) {
                 case "pause":
-                    playerObj.get(interaction.guild.id).audioPlayer.pause();
                     interaction.update("Player paused!");
+                    play.audioPlayer.pause();
                     break;
                 case "resume":
-                    playerObj.get(interaction.guild.id).audioPlayer.unpause();
                     interaction.update("Player resumed!");
+                    play.audioPlayer.unpause();
                     break;
                 case "next":
                     nextSongButton({ interaction, playerObj, resourceQueue });
                     break;
+                case "list":
+                    let list = getResourceQueue(
+                        resourceQueue,
+                        interaction.guild.id
+                    );
+                    interaction.reply({
+                        embeds: [getListEmbed(list)],
+                    });
+                    break;
+                case "clear":
+                    resourceQueue.set(interaction.guild.id, []);
+                    interaction.update(`Queue cleared 👍`);
+                    break;
+                case "leave":
+                    leave({ interaction, playerObj, resourceQueue });
+                    break;
             }
         } catch (e) {
-            console.log(e);
+            console.log(Date(), e);
         }
     } else {
         return;

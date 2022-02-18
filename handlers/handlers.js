@@ -37,7 +37,7 @@ async function playSong(params) {
             resourceQueue.set(interaction.guild.id, queue);
             await interaction.editReply({
                 content: "Started playing songs 😁",
-                components: [getPlayerButtons()],
+                components: [...getPlayerButtons()],
             });
         } else {
             let s = queue.shift();
@@ -46,7 +46,7 @@ async function playSong(params) {
             resourceQueue.set(interaction.guild.id, queue);
             await interaction.editReply({
                 content: "Started playing songs 😁",
-                components: [getPlayerButtons()],
+                components: [...getPlayerButtons()],
             });
         }
     } else {
@@ -59,7 +59,7 @@ async function playSong(params) {
                 resourceQueue.set(interaction.guild.id, queue);
                 await interaction.reply({
                     content: "Started playing songs 😁",
-                    components: [getPlayerButtons()],
+                    components: [...getPlayerButtons()],
                 });
             } else {
                 await interaction.reply("Song queue is empty 😅");
@@ -76,7 +76,7 @@ async function playSong(params) {
                 resourceQueue.set(interaction.guild.id, queue);
                 await interaction.reply({
                     content: "Started playing songs 😁",
-                    components: [getPlayerButtons()],
+                    components: [...getPlayerButtons()],
                 });
             } else {
                 await interaction.reply("Song queue is empty 😅");
@@ -158,11 +158,17 @@ function treble(params) {
 
 async function leave(params) {
     let { interaction, playerObj, resourceQueue } = params;
-    await interaction.reply("🥺😢😭, I am leaving the channel 😤");
+    if (!interaction.isButton())
+        await interaction.reply("🥺😢😭, I am leaving the channel 😤");
+    else
+        await interaction.update({
+            content: "🥺😢😭, I am leaving the channel 😤",
+            components: [],
+        });
 
     let p = playerObj.get(interaction.guild.id);
-    if (p.audioPlayer) p.audioPlayer.stop();
-    if (p.connection) p.connection.destroy();
+    if (p && p.audioPlayer) p.audioPlayer.stop();
+    if (p && p.connection) p.connection.destroy();
 
     resourceQueue.set(interaction.guild.id, []);
     playerObj.set(interaction.guild.id, null);
