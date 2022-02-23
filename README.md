@@ -4,7 +4,7 @@ Discord music bot backend to play music from youtube and spotify with audio modu
 
 # Support
 
-Join my discord [server](https://discord.gg/CQyttB8dEn) for support.
+Join my discord [server](https://discord.gg/9vEZETqCg9) for queries, suggestions and support.
 
 # Bot commands
 
