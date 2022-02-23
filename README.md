@@ -9,15 +9,15 @@ Join my discord [server](https://discord.gg/CQyttB8dEn) for support.
 # Bot commands
 
 -   /help
--   /play url or name
+-   /play url or name or index
 -   /add url or name
 -   /next
 -   /pause
 -   /resume
 -   /leave
 -   /clear clears the song queue
--   /bass values from 1 to 12
--   /treble values from 1 to 12
+-   /bass values from 1 to 50
+-   /treble values from 1 to 50
 -   /partytogether \<select the options displayed\>
 -   link to [instructions](./instrcutions.txt)
 

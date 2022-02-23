@@ -1,18 +1,7 @@
-require("dotenv").config(); //initialize dotenv
-const { Client } = require("discord.js");
+require("dotenv").config();
 const play = require("play-dl");
-const { getHelpEmbed, getListEmbed } = require("./scripts/message-embed");
-const {
-    playSong,
-    addSong,
-    nextSong,
-    nextSongButton,
-    bass,
-    treble,
-    leave,
-    getWatchLink,
-} = require("./handlers/handlers");
-const { getResourceQueue } = require("./handlers/handlerutils");
+const { Client } = require("discord.js");
+const Player = require("./classes/Player");
 const { DiscordTogether } = require("discord-together");
 
 play.setToken({
@@ -24,123 +13,117 @@ play.setToken({
     },
 });
 
-let playerObj = new Map();
-let audioFilters = new Map();
-let resourceQueue = new Map();
-
-// Discord client
 const client = new Client({
     intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"],
 });
 
 client.discordTogether = new DiscordTogether(client);
+const player = new Player();
 
 client.once("ready", () => {
     console.log("Connected on: " + Date());
+    client.user.setActivity({
+        name: "/help 😎",
+        type: "LISTENING",
+    });
 });
 
 client.on("interactionCreate", async (interaction) => {
     if (!interaction.guildId) return;
 
     if (interaction.isCommand()) {
+        player.setInteraction(interaction);
+
         try {
             switch (interaction.commandName) {
                 case "help":
-                    interaction.reply({ embeds: [getHelpEmbed()] });
+                    player.help();
                     break;
                 case "play":
-                    playSong({
-                        interaction,
-                        playerObj,
-                        resourceQueue,
-                        audioFilters,
-                    });
+                    player.playSong();
                     break;
                 case "add":
-                    addSong({ interaction, resourceQueue, audioFilters });
+                    player.addSong();
                     break;
                 case "next":
-                    nextSong({ interaction, playerObj, resourceQueue });
+                    player.playNextSong();
                     break;
                 case "list":
-                    let list = getResourceQueue(
-                        resourceQueue,
-                        interaction.guild.id
-                    );
-                    interaction.reply({
-                        embeds: [getListEmbed(list)],
-                    });
+                    player.displayQueue();
                     break;
                 case "pause":
-                    interaction.reply(`Player paused!`);
-                    playerObj.get(interaction.guild.id).audioPlayer.pause();
+                    player.pauseSong();
                     break;
                 case "resume":
-                    interaction.reply(`Player resumed!`);
-                    playerObj.get(interaction.guild.id).audioPlayer.unpause();
+                    player.resumeSong();
                     break;
                 case "clear":
-                    resourceQueue.set(interaction.guild.id, []);
-                    interaction.reply(`Queue cleared 👍`);
+                    player.clearQueue();
                     break;
                 case "leave":
-                    leave({ interaction, playerObj, resourceQueue });
+                    player.destroy();
                     break;
                 case "bass":
-                    bass({ interaction, audioFilters });
+                    player.setBass();
                     break;
                 case "treble":
-                    treble({ interaction, audioFilters });
+                    player.setTreble();
                     break;
                 case "partytogether":
-                    getWatchLink(interaction, client);
+                    if (!interaction.member.voice.channel)
+                        return interaction.reply(
+                            "Please join a voice channel 😅"
+                        );
+
+                    let voicechannel = interaction.member.voice.channel.id;
+                    let option =
+                        interaction.options.getString("party-together");
+
+                    client.discordTogether
+                        .createTogetherCode(voicechannel, option)
+                        .then(async (invite) => {
+                            interaction.reply(
+                                `Here's the link: ${invite.code}  🥳`
+                            );
+                        });
                     break;
             }
         } catch (e) {
             console.log(Date(), e);
         }
     } else if (interaction.isButton()) {
-        let play = playerObj.get(interaction.guild.id);
-        if (!play)
-            return interaction.update({
-                content: "Interaction expired!",
-                components: [],
-            });
         try {
+            player.setInteraction(interaction);
+
+            if (!player.state.get(interaction.guildId))
+                return interaction.update({
+                    content: "Interaction expired!",
+                    components: [],
+                });
+
             switch (interaction.customId) {
                 case "pause":
-                    interaction.update("Player paused!");
-                    play.audioPlayer.pause();
+                    player.pauseSong();
                     break;
                 case "resume":
-                    interaction.update("Player resumed!");
-                    play.audioPlayer.unpause();
+                    player.resumeSong();
                     break;
                 case "next":
-                    nextSongButton({ interaction, playerObj, resourceQueue });
+                    player.playNextSong();
                     break;
                 case "list":
-                    let list = getResourceQueue(
-                        resourceQueue,
-                        interaction.guild.id
-                    );
-                    interaction.reply({
-                        embeds: [getListEmbed(list)],
-                    });
+                    player.displayQueue();
                     break;
                 case "clear":
-                    resourceQueue.set(interaction.guild.id, []);
-                    interaction.update(`Queue cleared 👍`);
+                    player.clearQueue();
                     break;
                 case "leave":
-                    leave({ interaction, playerObj, resourceQueue });
+                    player.destroy();
                     break;
             }
         } catch (e) {
             console.log(Date(), e);
         }
-    } else {
-        return;
     }
 });
 

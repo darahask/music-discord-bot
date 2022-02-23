@@ -1,6 +1,6 @@
 {
     "name": "music-discord-bot",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "description": "A discord music bot backend",
     "main": "index.js",
     "scripts": {

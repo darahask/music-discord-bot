@@ -13,7 +13,7 @@ const commands = [
             {
                 name: "song",
                 type: 3,
-                description: "Enter URL or Name",
+                description: "Enter URL or Name or Index",
             },
         ],
     },
@@ -61,7 +61,7 @@ const commands = [
                 name: "bass",
                 type: 3,
                 description:
-                    "Enter any value from 1 to 12, for no bass set it back to 0",
+                    "Enter any value from 1 to 50, for no bass set it back to 0",
                 required: true,
             },
         ],
@@ -74,7 +74,7 @@ const commands = [
                 name: "treble",
                 type: 3,
                 description:
-                    "Enter any value from 1 to 12, for no treble set it back to 0",
+                    "Enter any value from 1 to 50, for no treble set it back to 0",
                 required: true,
             },
         ],
