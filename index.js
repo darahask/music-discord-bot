@@ -98,27 +98,28 @@ client.on("interactionCreate", async (interaction) => {
             if (!player.state.get(interaction.guildId))
                 return interaction.update({
                     content: "Interaction expired!",
+                    embeds: [],
                     components: [],
                 });
 
             switch (interaction.customId) {
                 case "pause":
-                    player.pauseSong();
+                    player.pauseSong(true);
                     break;
                 case "resume":
-                    player.resumeSong();
+                    player.resumeSong(true);
                     break;
                 case "next":
-                    player.playNextSong();
+                    player.playNextSong(true);
                     break;
                 case "list":
-                    player.displayQueue();
+                    player.displayQueue(true);
                     break;
                 case "clear":
-                    player.clearQueue();
+                    player.clearQueue(true);
                     break;
                 case "leave":
-                    player.destroy();
+                    player.destroy(true);
                     break;
             }
         } catch (e) {

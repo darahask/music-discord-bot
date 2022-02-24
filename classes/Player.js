@@ -171,20 +171,41 @@ class Player {
         await this.interaction.editReply("Added to queue 👍");
     }
 
-    pauseSong() {
-        this.interaction.reply("Player paused!");
+    pauseSong(isButton = false) {
+        if (isButton) {
+            this.interaction.update({
+                content: "Player paused!",
+                embeds: [],
+            });
+        } else {
+            this.interaction.reply("Player paused!");
+        }
         let voice = this.state.get(this.interaction.guild.id);
         if (voice && voice.player) voice.player.pause();
     }
 
-    resumeSong() {
-        this.interaction.reply("Player resumed!");
+    resumeSong(isButton = false) {
+        if (isButton) {
+            this.interaction.update({
+                content: "Player resumed!",
+                embeds: [],
+            });
+        } else {
+            this.interaction.reply("Player resumed!");
+        }
         let voice = this.state.get(this.interaction.guild.id);
         if (voice && voice.player) voice.player.unpause();
     }
 
-    playNextSong() {
-        this.interaction.reply("Skipped song 🖖");
+    playNextSong(isButton = false) {
+        if (isButton) {
+            this.interaction.update({
+                content: "Song skipped 🖖",
+                embeds: [],
+            });
+        } else {
+            this.interaction.reply("Skipped song 🖖");
+        }
         let voice = this.state.get(this.interaction.guild.id);
         if (voice && voice.player) voice.player.stop();
     }
@@ -223,15 +244,29 @@ class Player {
         }
     }
 
-    displayQueue() {
+    displayQueue(isButton = false) {
         let { queue, index } = this.queue.getList();
-        this.interaction.reply({
-            embeds: [getListEmbed(queue, index)],
-        });
+        if (isButton) {
+            this.interaction.update({
+                content: null,
+                embeds: [getListEmbed(queue, index)],
+            });
+        } else {
+            this.interaction.reply({
+                embeds: [getListEmbed(queue, index)],
+            });
+        }
     }
 
-    clearQueue() {
-        this.interaction.reply("Queue Cleared 👍");
+    clearQueue(isButton = false) {
+        if (isButton) {
+            this.interaction.update({
+                content: "Queue Cleared 👍",
+                embeds: [],
+            });
+        } else {
+            this.interaction.reply("Queue Cleared 👍");
+        }
         this.queue.destroy();
     }
 
@@ -239,8 +274,16 @@ class Player {
         this.interaction.reply({ embeds: [getHelpEmbed()] });
     }
 
-    destroy() {
-        this.interaction.reply("🥺😢😭, I am leaving the channel 😤");
+    destroy(isButton = false) {
+        if (isButton) {
+            this.interaction.update({
+                content: "🥺😢😭, I am leaving the channel 😤",
+                embeds: [],
+                components: [],
+            });
+        } else {
+            this.interaction.reply("🥺😢😭, I am leaving the channel 😤");
+        }
         let voice = this.state.get(this.interaction.guild.id);
         if (voice && voice.connection) voice.connection.destroy();
         this.queue.destroy();
