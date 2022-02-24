@@ -49,7 +49,7 @@ module.exports = async function createResource(res) {
         if (res.bass !== "0") {
             ffmped_args.push("-af");
             let valstr = "";
-            valstr = `bass=g=${res.bass},asubboost,dynaudnorm=f=250`;
+            valstr = `bass=g=${res.bass},asubboost,dynaudnorm`;
             if (res.treble !== "0") {
                 valstr += `,treble=g=${res.treble}`;
             }
