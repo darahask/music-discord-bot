@@ -1,6 +1,6 @@
 {
     "name": "music-discord-bot",
-    "version": "1.1.0",
+    "version": "1.1.2",
     "description": "A discord music bot backend",
     "main": "index.js",
     "scripts": {
@@ -35,7 +35,7 @@
         "dotenv": "^16.0.0",
         "ffmpeg-static": "^4.4.1",
         "opusscript": "^0.0.8",
-        "play-dl": "^1.8.8",
+        "play-dl": "^1.8.9",
         "prism-media": "^1.3.2",
         "tweetnacl": "^1.0.3"
     }

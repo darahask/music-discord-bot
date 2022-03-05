@@ -48,7 +48,7 @@ async function createResourceList(args, bass, treble) {
                     }
                 }
             } else {
-                if (args.includes("playlist")) {
+                if (play.yt_validate(args) === 'playlist') {
                     let tracks = await play.playlist_info(args, {
                         incomplete: true,
                     });
