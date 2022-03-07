@@ -1,15 +1,49 @@
 const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
 
 function getHelpEmbed() {
-    let mainStr = `\`/play <url> or <song-name> or <index>\`\n\`/add <url> or <song-name>\`\n\`/list\`\n\`/next\`\n\`/pause\`\n\`/resume\`\n\`/clear\`\n\`/leave\`\n\`/bass <values from 1 to 50>\`\n\`/treble <values from 1 to 50>\`\n\`/partytogether <options>\``;
-    const exampleEmbed = new MessageEmbed()
+    const messageEmbed = new MessageEmbed()
         .setColor("#0099ff")
         .setTitle("Medley bot commands 🎵")
         .setAuthor({ name: "By Darahas" })
         .setThumbnail("https://i.imgur.com/mKkSZOl.png")
-        .setDescription(mainStr);
+        .setFields([
+            {
+                name: "`/play`",
+                value: "Inputs: url or name or index",
+                inline: false,
+            },
+            {
+                name: "`/add`",
+                value: "Inputs: url or name",
+                inline: false,
+            },
+            {
+                name: "`/bass`",
+                value: "Inputs: values from 1 to 50",
+                inline: false,
+            },
+            {
+                name: "`/treble`",
+                value: "Inputs: values from 1 to 50",
+                inline: false,
+            },
+            {
+                name: "`/volume`",
+                value: "Inputs: values from 1",
+                inline: false,
+            },
+            {
+                name: "`/partytogether`",
+                value: "Inputs: select from options",
+                inline: false,
+            },
+            {
+                "name":"Controls:",
+                "value":"`/pause` `/resume` `/next` `/list` `/clear` `/leave`"
+            }
+        ]);
 
-    return exampleEmbed;
+    return messageEmbed;
 }
 
 function getListEmbed(data, i) {

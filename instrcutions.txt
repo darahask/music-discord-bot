@@ -16,7 +16,7 @@ Playing songs:
 
 Playing songs with bass and treble:
 - once bass or treble are set, it changes the whole queue`s bass and treble and the songs which are further added.
-- bass is reset once bot leaves the channel or can be reset by making it zero(/bass 0).
+- bass and treble are reset once bot leaves the channel or can be reset by making it zero.
 
 Warnings:
 - Due to unavailability of spotify premium, if spotify link is provided, it gets the data of the songs

@@ -15,10 +15,11 @@ Join my discord [server](https://discord.gg/Uwfq9fJzmA) for queries, suggestions
 -   /pause
 -   /resume
 -   /leave
+-   /volume values from 1
 -   /clear clears the song queue
 -   /bass values from 1 to 50
 -   /treble values from 1 to 50
--   /partytogether \<select the options displayed\>
+-   /partytogether \<select from options\>
 -   link to [instructions](./instrcutions.txt)
 
 # Requirements
@@ -62,13 +63,6 @@ Run these commands in root directory
 ```
 npm install
 ```
-
--   After installing the dependencies and before inviting the bot to your servers run this command:
-
-```
-node register-commands.js
-```
-
 -   Now launch this bot backend using npm start and invite the bot to your servers.
 
 ```
