@@ -33,6 +33,17 @@ function getListEmbed(data, i) {
     return exampleEmbed;
 }
 
+function getSingleMessageEmbed(type, name) {
+    return new MessageEmbed()
+        .setFields([
+            {
+                name: type,
+                value: name,
+            },
+        ])
+        .setColor("#0099ff");
+}
+
 function getPlayerButtons() {
     const row1 = new MessageActionRow().addComponents(
         new MessageButton()
@@ -64,4 +75,9 @@ function getPlayerButtons() {
     return [row1, row2];
 }
 
-module.exports = { getHelpEmbed, getListEmbed, getPlayerButtons };
+module.exports = {
+    getHelpEmbed,
+    getListEmbed,
+    getPlayerButtons,
+    getSingleMessageEmbed,
+};

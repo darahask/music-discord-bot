@@ -1,36 +1,40 @@
 const { FFmpeg, opus } = require("prism-media");
-const play = require("play-dl");
-const { createAudioResource } = require("@discordjs/voice");
+const { createAudioResource, StreamType } = require("@discordjs/voice");
+const Innertube = require("youtubei.js");
+
+let YoutubeFactory = (function () {
+    var instance;
+
+    async function createInstance() {
+        console.log("Instance called!");
+        return await new Innertube();
+    }
+
+    return {
+        getInstance: async function () {
+            if (!instance) {
+                instance = await createInstance();
+            }
+            return instance;
+        },
+    };
+})();
 
 module.exports = async function createResource(res) {
     try {
-        let { stream, type } = await play.stream(res.link, {
-            discordPlayerCompatibility: true,
-        });
+        let id = res.link.split("v=")[1].trim();
+        let youtube = await YoutubeFactory.getInstance();
+        let stream = youtube.download(id, { type: "audio" });
+
         if (
             isNaN(res.bass) ||
             isNaN(res.treble) ||
-            (res.bass === "0" && res.treble === "0")
+            isNaN(res.volume) ||
+            (res.bass === "0" && res.treble === "0" && res.volume === "0")
         ) {
-            console.log("Started Playing!");
-            stream.on("close", () => {
-                console.log("Main stream closed");
-                stream.removeAllListeners();
-            });
-            stream.on("error", (e) => {
-                console.log(Date(), e.message);
-                stream.removeAllListeners();
-            });
-            let resource = createAudioResource(stream, { type: type });
-            resource.playStream.on("close", () => {
-                console.log("Player stream closed");
-                resource.playStream.removeAllListeners();
-            });
-            resource.playStream.on("error", (e) => {
-                console.log(Date(), e.message);
-                resource.playStream.removeAllListeners();
-            });
-            return resource;
+            console.log(`Started Playing: ${res.link}`);
+            stream.on("error", (e) => console.log(Date(), e.message));
+            return createAudioResource(stream);
         }
 
         let ffmped_args = [
@@ -53,30 +57,36 @@ module.exports = async function createResource(res) {
             if (res.treble !== "0") {
                 valstr += `,treble=g=${res.treble}`;
             }
+            if (res.volume !== "0") {
+                valstr += `,volume=${res.volume}`;
+            }
             ffmped_args.push(valstr);
-        } else {
+        } else if (res.treble !== "0") {
             ffmped_args.push("-af");
-            ffmped_args.push(`treble=g=${res.treble}`);
+            let valstr = `treble=g=${res.treble}`;
+            if (res.volume !== "0") {
+                valstr += `,volume=${res.volume}`;
+            }
+            ffmped_args.push(valstr);
+        } else if (res.volume !== "0") {
+            ffmped_args.push("-af");
+            ffmped_args.push(`volume=${res.volume}`);
         }
 
         let transcoder = new FFmpeg({
             args: ffmped_args,
         });
+
         let opusEncoder = new opus.Encoder({
             rate: 48000,
             channels: 2,
             frameSize: 960,
         });
 
-        console.log("Started Playing...");
+        console.log(`Started Playing(ffmpeg enabled): ${res.link}`);
+
         const output = stream.pipe(transcoder);
         const outputStream = output.pipe(opusEncoder);
-        stream.on("error", (e) => {
-            outputStream.emit("error", e);
-        });
-        output.on("error", (e) => {
-            outputStream.emit("error", e);
-        });
 
         outputStream.on("close", () => {
             console.log("Main stream closed");
@@ -101,16 +111,9 @@ module.exports = async function createResource(res) {
             outputStream.removeAllListeners();
         });
 
-        let resource = createAudioResource(outputStream, { type: type });
-        resource.playStream.on("close", () => {
-            console.log("Player stream closed");
-            resource.playStream.removeAllListeners();
+        return createAudioResource(outputStream, {
+            inputType: StreamType.Opus,
         });
-        resource.playStream.on("error", (e) => {
-            console.log(Date(), e);
-            resource.playStream.removeAllListeners();
-        });
-        return resource;
     } catch (e) {
         console.log(e.message);
     }

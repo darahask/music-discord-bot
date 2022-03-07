@@ -9,6 +9,7 @@ const {
     getHelpEmbed,
     getListEmbed,
     getPlayerButtons,
+    getSingleMessageEmbed,
 } = require("../audioutils/message-embed");
 const Queue = require("./Queue");
 
@@ -33,6 +34,9 @@ class Player {
                 console.log("Song changed!");
                 let res = this.queue.next();
                 if (res) {
+                    this.interaction.channel.send({
+                        embeds: [getSingleMessageEmbed("Playing", res.name)],
+                    });
                     player.play(await createResource(res));
                 } else {
                     this.interaction.channel.send("Finished Playing songs 😊");
@@ -86,16 +90,20 @@ class Player {
                         "Player is already playing, Added to queue 👍"
                     );
                 }
-                voice.player.play(await createResource(this.queue.current()));
+                let res = this.queue.current();
+                voice.player.play(await createResource(res));
                 await this.interaction.editReply({
-                    content: "Started playing songs 😁",
+                    content: null,
+                    embeds: [getSingleMessageEmbed("Playing", res.name)],
                     components: [...getPlayerButtons()],
                 });
             } else {
                 let player = this.getNewPlayer();
-                player.play(await createResource(this.queue.current()));
+                let res = this.queue.current();
+                player.play(await createResource(res));
                 await this.interaction.editReply({
-                    content: "Started playing songs 😁",
+                    content: null,
+                    embeds: [getSingleMessageEmbed("Playing", res.name)],
                     components: [...getPlayerButtons()],
                 });
             }
@@ -106,7 +114,8 @@ class Player {
                 if (res) {
                     voice.player.play(await createResource(res));
                     await this.interaction.reply({
-                        content: "Started playing songs 😁",
+                        content: null,
+                        embeds: [getSingleMessageEmbed("Playing", res.name)],
                         components: [...getPlayerButtons()],
                     });
                 } else {
@@ -119,7 +128,8 @@ class Player {
                     let player = this.getNewPlayer();
                     player.play(await createResource(res));
                     await this.interaction.reply({
-                        content: "Started playing songs 😁",
+                        content: null,
+                        embeds: [getSingleMessageEmbed("Playing", res.name)],
                         components: [...getPlayerButtons()],
                     });
                 } else {
@@ -139,7 +149,8 @@ class Player {
                 if (res) {
                     voice.player.play(await createResource(res));
                     await this.interaction.reply({
-                        content: "Started playing songs 😁",
+                        content: null,
+                        embeds: [getSingleMessageEmbed("Playing", res.name)],
                         components: [...getPlayerButtons()],
                     });
                 } else {
@@ -150,7 +161,8 @@ class Player {
                     let player = this.getNewPlayer();
                     player.play(await createResource(res));
                     await this.interaction.reply({
-                        content: "Started playing songs 😁",
+                        content: null,
+                        embeds: [getSingleMessageEmbed("Playing", res.name)],
                         components: [...getPlayerButtons()],
                     });
                 } else {
@@ -237,6 +249,23 @@ class Player {
         let id = this.interaction.guild.id;
         let voice = this.state.get(id);
         this.queue.setTreble(treble);
+
+        if (voice && voice.player) {
+            this.queue.back();
+            voice.player.stop();
+        }
+    }
+
+    setVolume() {
+        let volume = this.interaction.options.getString("volume");
+        if (!volume) {
+            this.interaction.reply("Please enter a value 🥺");
+            return;
+        }
+        this.interaction.reply("volume set Succesfully!");
+        let id = this.interaction.guild.id;
+        let voice = this.state.get(id);
+        this.queue.setVolume(volume);
 
         if (voice && voice.player) {
             this.queue.back();

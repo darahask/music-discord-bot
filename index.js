@@ -1,5 +1,6 @@
 require("dotenv").config();
 const play = require("play-dl");
+const commands = require("./commands");
 const { Client } = require("discord.js");
 const Player = require("./classes/Player");
 const { DiscordTogether } = require("discord-together");
@@ -26,6 +27,7 @@ client.once("ready", () => {
         name: "/help 😎",
         type: "LISTENING",
     });
+    client.application.commands.set(commands);
 });
 
 client.on("interactionCreate", async (interaction) => {
@@ -68,6 +70,9 @@ client.on("interactionCreate", async (interaction) => {
                     break;
                 case "treble":
                     player.setTreble();
+                    break;
+                case "volume":
+                    player.setVolume();
                     break;
                 case "partytogether":
                     if (!interaction.member.voice.channel)

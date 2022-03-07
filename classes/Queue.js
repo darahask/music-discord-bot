@@ -24,7 +24,8 @@ class Queue {
         let list = await createResourceList(
             song.trim(),
             lstate ? lstate.bass ?? "0" : "0",
-            lstate ? lstate.treble ?? "0" : "0"
+            lstate ? lstate.treble ?? "0" : "0",
+            lstate ? lstate.volume ?? "0" : "0"
         );
         if (lstate) {
             this.state.set(this.guildid, {
@@ -98,6 +99,27 @@ class Queue {
         } else {
             this.state.set(this.guildid, {
                 treble: trebleval,
+                queue: [],
+                index: 0,
+            });
+        }
+    }
+
+    setVolume(volume) {
+        let lstate = this.state.get(this.guildid);
+        if (lstate) {
+            let myqueue = lstate.queue.map((val) => ({
+                ...val,
+                volume: volume,
+            }));
+            this.state.set(this.guildid, {
+                ...lstate,
+                queue: [...myqueue],
+                volume: volume,
+            });
+        } else {
+            this.state.set(this.guildid, {
+                volume: volume,
                 queue: [],
                 index: 0,
             });

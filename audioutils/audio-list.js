@@ -13,7 +13,7 @@ function validURL(str) {
     return !!pattern.test(str);
 }
 
-async function createResourceList(args, bass, treble) {
+async function createResourceList(args, bass, treble, volume) {
     try {
         let resourceQueue = [];
 
@@ -30,6 +30,7 @@ async function createResourceList(args, bass, treble) {
                         link: yt_info[0].url,
                         bass: bass,
                         treble: treble,
+                        volume,
                     };
                     resourceQueue.push(audioResource);
                 } else {
@@ -43,12 +44,13 @@ async function createResourceList(args, bass, treble) {
                             link: yt_info[0].url,
                             bass: bass,
                             treble: treble,
+                            volume,
                         };
                         resourceQueue.push(audioResource);
                     }
                 }
             } else {
-                if (args.includes("playlist")) {
+                if (play.yt_validate(args) === "playlist") {
                     let tracks = await play.playlist_info(args, {
                         incomplete: true,
                     });
@@ -59,6 +61,7 @@ async function createResourceList(args, bass, treble) {
                             link: tracks[i].url,
                             bass: bass,
                             treble: treble,
+                            volume,
                         };
                         resourceQueue.push(audioResource);
                     }
@@ -69,6 +72,7 @@ async function createResourceList(args, bass, treble) {
                         link: args,
                         bass: bass,
                         treble: treble,
+                        volume,
                     };
                     resourceQueue.push(audioResource);
                 }
@@ -80,6 +84,7 @@ async function createResourceList(args, bass, treble) {
                 link: yt_info[0].url,
                 bass: bass,
                 treble: treble,
+                volume,
             };
             resourceQueue.push(audioResource);
         }
@@ -90,8 +95,9 @@ async function createResourceList(args, bass, treble) {
             {
                 name: "Take Five",
                 link: "https://www.youtube.com/watch?v=vmDDOFXSgAs",
-                bass: "1",
+                bass: "0",
                 treble: "0",
+                volume: "0",
             },
         ];
     }
