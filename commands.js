@@ -33,7 +33,20 @@ const commands = [
             {
                 name: "volume",
                 type: 3,
-                description: "Enter any value starting from 1, for original volume set to 0",
+                description:
+                    "Enter any value starting from 1, for original volume set to 0",
+                required: true,
+            },
+        ],
+    },
+    {
+        name: "seek",
+        description: "Seeks the currently playing song",
+        options: [
+            {
+                name: "seek",
+                type: 3,
+                description: "Enter in HH:MM:SS or MM:SS or SS formats",
                 required: true,
             },
         ],

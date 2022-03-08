@@ -38,6 +38,7 @@ class Player {
                         embeds: [getSingleMessageEmbed("Playing", res.name)],
                     });
                     player.play(await createResource(res));
+                    this.queue.resetSeek();
                 } else {
                     this.interaction.channel.send("Finished Playing songs 😊");
                 }
@@ -266,6 +267,23 @@ class Player {
         let id = this.interaction.guild.id;
         let voice = this.state.get(id);
         this.queue.setVolume(volume);
+
+        if (voice && voice.player) {
+            this.queue.back();
+            voice.player.stop();
+        }
+    }
+
+    seek() {
+        let seek = this.interaction.options.getString("seek");
+        if (!seek) {
+            this.interaction.reply("Please enter a value 🥺");
+            return;
+        }
+        this.interaction.reply(`Seeking to ${seek}`);
+        let id = this.interaction.guild.id;
+        let voice = this.state.get(id);
+        this.queue.seek(seek);
 
         if (voice && voice.player) {
             this.queue.back();

@@ -126,6 +126,44 @@ class Queue {
         }
     }
 
+    resetSeek() {
+        let lstate = this.state.get(this.guildid);
+        if (lstate) {
+            let myqueue = lstate.queue.map((val) => {
+                if (val.seek) {
+                    delete val.seek;
+                    return val;
+                } else {
+                    return val;
+                }
+            });
+            this.state.set(this.guildid, {
+                ...lstate,
+                queue: [...myqueue],
+            });
+        }
+    }
+
+    seek(s) {
+        let lstate = this.state.get(this.guildid);
+        if (lstate) {
+            let myqueue = lstate.queue.map((val, index) => {
+                if (lstate.index === index) {
+                    return {
+                        ...val,
+                        seek: s,
+                    };
+                } else {
+                    return val;
+                }
+            });
+            this.state.set(this.guildid, {
+                ...lstate,
+                queue: [...myqueue],
+            });
+        }
+    }
+
     getList() {
         let lstate = this.state.get(this.guildid);
         if (lstate) {

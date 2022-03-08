@@ -90,7 +90,7 @@ async function createResourceList(args, bass, treble, volume) {
         }
         return resourceQueue;
     } catch (e) {
-        console.log(e);
+        console.log(e.message);
         return [
             {
                 name: "Take Five",

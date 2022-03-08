@@ -16,6 +16,7 @@ Join my discord [server](https://discord.gg/Uwfq9fJzmA) for queries, suggestions
 -   /resume
 -   /leave
 -   /volume values from 1
+-   /seek Enter in HH:MM:SS or MM:SS or SS formats
 -   /clear clears the song queue
 -   /bass values from 1 to 50
 -   /treble values from 1 to 50

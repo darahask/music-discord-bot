@@ -74,6 +74,9 @@ client.on("interactionCreate", async (interaction) => {
                 case "volume":
                     player.setVolume();
                     break;
+                case "seek":
+                    player.seek();
+                    break;
                 case "partytogether":
                     if (!interaction.member.voice.channel)
                         return interaction.reply(

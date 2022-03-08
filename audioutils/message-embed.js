@@ -33,14 +33,19 @@ function getHelpEmbed() {
                 inline: false,
             },
             {
+                name: "`/seek`",
+                value: "Inputs: In HH:MM:SS or MM:SS or SS formats",
+                inline: false,
+            },
+            {
                 name: "`/partytogether`",
                 value: "Inputs: select from options",
                 inline: false,
             },
             {
-                "name":"Controls:",
-                "value":"`/pause` `/resume` `/next` `/list` `/clear` `/leave`"
-            }
+                name: "Controls:",
+                value: "`/pause` `/resume` `/next` `/list` `/clear` `/leave`",
+            },
         ]);
 
     return messageEmbed;
