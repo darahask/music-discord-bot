@@ -40,10 +40,6 @@ module.exports = async function createResource(res) {
             "libopus",
             "-f",
             "opus",
-            "-ar",
-            "48000",
-            "-ac",
-            "2",
         ];
 
         if (isValidSeek(res.seek)) {
