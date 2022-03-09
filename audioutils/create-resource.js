@@ -1,24 +1,6 @@
 const { FFmpeg } = require("prism-media");
 const { createAudioResource, StreamType } = require("@discordjs/voice");
-const Innertube = require("youtubei.js");
-
-let YoutubeFactory = (function () {
-    let instance;
-
-    async function createInstance() {
-        console.log("Instance called!");
-        return await new Innertube();
-    }
-
-    return {
-        getInstance: async function () {
-            if (!instance) {
-                instance = await createInstance();
-            }
-            return instance;
-        },
-    };
-})();
+const play = require("play-dl");
 
 function isValidSeek(str) {
     let isValid1 = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(
@@ -31,11 +13,13 @@ function isValidSeek(str) {
 
 module.exports = async function createResource(res) {
     try {
-        let id = res.link.split("v=")[1].trim();
-        let youtube = await YoutubeFactory.getInstance();
-        let stream = youtube.download(id, { type: "audio" });
+        let { stream, _ } = await play.stream(res.link, {
+            discordPlayerCompatibility: true,
+        });
 
         let ffmpeg_args = [
+            "-analyzeduration",
+            "0",
             "-acodec",
             "libopus",
             "-f",
