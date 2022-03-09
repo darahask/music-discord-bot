@@ -1,6 +1,6 @@
 {
     "name": "music-discord-bot",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "A discord music bot backend",
     "main": "index.js",
     "scripts": {
@@ -28,16 +28,20 @@
     },
     "homepage": "https://github.com/darahask/music-discord-bot#readme",
     "dependencies": {
+        "@discordjs/opus": "0.7.0",
         "@discordjs/rest": "^0.3.0",
         "@discordjs/voice": "^0.8.0",
         "discord-together": "^1.3.3",
         "discord.js": "^13.6.0",
         "dotenv": "^16.0.0",
-        "ffmpeg-static": "^4.4.1",
+        "ffmpeg-static": "^5.0.0",
         "libsodium-wrappers": "^0.7.9",
-        "opusscript": "^0.0.8",
         "play-dl": "^1.8.9",
         "prism-media": "^1.3.2",
         "youtubei.js": "^1.3.6"
+    },
+    "overrides": {
+        "ffmpeg-static": "$ffmpeg-static",
+        "@discordjs/opus": "$@discordjs/opus"
     }
 }
