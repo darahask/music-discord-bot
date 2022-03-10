@@ -20,6 +20,8 @@ module.exports = async function createResource(res) {
         let ffmpeg_args = [
             "-analyzeduration",
             "0",
+            "-loglevel",
+            "0",
             "-acodec",
             "libopus",
             "-f",
@@ -33,7 +35,7 @@ module.exports = async function createResource(res) {
         if (res.bass !== "0" && !isNaN(res.bass)) {
             ffmpeg_args.push("-af");
             let valstr = "";
-            valstr = `bass=g=${res.bass},asubboost,dynaudnorm`;
+            valstr = `bass=g=${res.bass},asubboost`;
             if (res.treble !== "0" && !isNaN(res.treble)) {
                 valstr += `,treble=g=${res.treble}`;
             }
@@ -58,8 +60,8 @@ module.exports = async function createResource(res) {
         });
 
         console.log(`Started Playing: ${res.link}`);
-
         stream.on("error", (e) => console.log(Date(), e.message));
+
         const output = stream.pipe(transcoder);
         output.on("close", () => {
             console.log("Main stream closed");
