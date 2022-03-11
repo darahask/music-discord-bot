@@ -91,7 +91,7 @@ class Player {
                         "Player is already playing, Added to queue 👍"
                     );
                 }
-                let res = this.queue.current();
+                let res = this.queue.next();
                 voice.player.play(await createResource(res));
                 await this.interaction.editReply({
                     content: null,
@@ -100,7 +100,7 @@ class Player {
                 });
             } else {
                 let player = this.getNewPlayer();
-                let res = this.queue.current();
+                let res = this.queue.next();
                 player.play(await createResource(res));
                 await this.interaction.editReply({
                     content: null,
@@ -140,7 +140,7 @@ class Player {
                 }
             }
         } else {
-            let res = this.queue.current();
+            let res = this.queue.next();
             if (voice) {
                 if (voice.player.state.status === AudioPlayerStatus.Playing)
                     return this.interaction.reply(

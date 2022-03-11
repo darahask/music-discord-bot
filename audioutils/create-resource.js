@@ -22,8 +22,6 @@ module.exports = async function createResource(res) {
             "0",
             "-loglevel",
             "0",
-            "-acodec",
-            "libopus",
             "-f",
             "opus",
         ];
@@ -60,7 +58,6 @@ module.exports = async function createResource(res) {
         });
 
         console.log(`Started Playing: ${res.link}`);
-        stream.on("error", (e) => console.log(Date(), e.message));
 
         const output = stream.pipe(transcoder);
         output.on("close", () => {

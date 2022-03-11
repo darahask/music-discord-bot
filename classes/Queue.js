@@ -33,7 +33,7 @@ class Queue {
                 queue: [...lstate.queue, ...list],
             });
         } else {
-            this.state.set(this.guildid, { queue: [...list], index: 0 });
+            this.state.set(this.guildid, { queue: [...list], index: -1 });
         }
     }
 
@@ -79,7 +79,7 @@ class Queue {
             this.state.set(this.guildid, {
                 bass: bassval,
                 queue: [],
-                index: 0,
+                index: -1,
             });
         }
     }
@@ -100,7 +100,7 @@ class Queue {
             this.state.set(this.guildid, {
                 treble: trebleval,
                 queue: [],
-                index: 0,
+                index: -1,
             });
         }
     }
@@ -121,7 +121,7 @@ class Queue {
             this.state.set(this.guildid, {
                 volume: volume,
                 queue: [],
-                index: 0,
+                index: -1,
             });
         }
     }
